@@ -380,14 +380,36 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 /* ---- Auth ------------------------------------------------ */
-.auth-wrap { max-width: 440px; margin: 50px auto; padding: 0 20px; }
-.auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 38px 32px; }
-.auth-card h1 { font-size: 1.7rem; text-align: center; }
-.auth-sub { text-align: center; color: var(--text2); margin-bottom: 26px; }
-.auth-card .field { margin-bottom: 16px; }
-.auth-foot { text-align: center; margin-top: 20px; color: var(--text2); font-size: .9rem; }
+.auth-wrap { max-width: 620px; margin: 70px auto; padding: 0 20px; }
+.auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 50px 56px 44px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.35);
+    position: relative;
+    overflow: hidden;
+}
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.auth-card h1 { font-size: 2.1rem; text-align: center; margin-bottom: 6px; }
+.auth-sub { text-align: center; color: var(--text2); margin-bottom: 32px; font-size: 1rem; }
+.auth-card .field { margin-bottom: 18px; }
+.auth-card .field label { font-size: .88rem; }
+.auth-card .field input { padding: 13px 16px; font-size: .98rem; }
+.auth-card .btn-lg { padding: 14px 22px; font-size: 1rem; margin-top: 4px; }
+.auth-foot { text-align: center; margin-top: 22px; color: var(--text2); font-size: .92rem; }
 .auth-foot a { color: var(--accent); font-weight: 700; }
 .auth-hint { margin-top: 18px; padding: 12px 14px; background: var(--bg); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); font-size: .82rem; color: var(--text2); text-align: center; }
+@media (max-width: 560px) {
+    .auth-wrap { margin: 30px auto; }
+    .auth-card { padding: 36px 24px 28px; }
+    .auth-card h1 { font-size: 1.7rem; }
+}
 
 /* ---- Account --------------------------------------------- */
 .account-layout { display: grid; grid-template-columns: 260px 1fr; gap: 28px; align-items: start; padding: 24px 0 60px; }
