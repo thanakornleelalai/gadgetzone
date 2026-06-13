@@ -43,9 +43,14 @@ define('DB_SSL',  (bool)getenv('GZ_DB_SSL'));
 define('FREE_SHIPPING_THRESHOLD', 5000);
 define('SHIPPING_FEE', 150);
 
-// ── Error reporting (turn display off in production) ──────
+// ── Error reporting ────────────────────────────────────────
+// On serverless hosts (Vercel) we never want PHP warnings echoed into
+// the response body — they break header() redirects with "headers
+// already sent". Treat GZ_DB_SSL=1 as "we're on a cloud host" and
+// silence display_errors; local dev keeps verbose output.
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
+ini_set('display_errors', getenv('GZ_DB_SSL') ? '0' : '1');
+ini_set('log_errors', '1');
 
 // ── Database connection (mysqli, OO style) ────────────────
 mysqli_report(MYSQLI_REPORT_OFF); // we handle errors ourselves

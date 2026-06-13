@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name        = sanitize($_POST['name'] ?? '');
         $category_id = (int)($_POST['category_id'] ?? 0);
         $price       = (float)($_POST['price'] ?? 0);
-        $old_price   = $_POST['old_price'] !== '' ? (float)$_POST['old_price'] : null;
+        $old_price   = (isset($_POST['old_price']) && $_POST['old_price'] !== '') ? (float)$_POST['old_price'] : null;
         $description = sanitize($_POST['description'] ?? '');
         $badge       = in_array($_POST['badge'] ?? '', ['NEW','HOT','SALE'], true) ? $_POST['badge'] : '';
         $stock       = (int)($_POST['stock'] ?? 0);
