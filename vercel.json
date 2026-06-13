@@ -5,15 +5,21 @@
     { "src": "pages/*.php",      "use": "vercel-php@0.7.3" },
     { "src": "admin/*.php",      "use": "vercel-php@0.7.3" },
     { "src": "includes/*.php",   "use": "vercel-php@0.7.3" },
-    { "src": "assets/**",        "use": "@vercel/static" }
+    { "src": "assets/**",        "use": "@vercel/static" },
+    { "src": "admin/admin.css",  "use": "@vercel/static" },
+    { "src": "admin/admin.js",   "use": "@vercel/static" },
+    { "src": "admin/uploads/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/assets/(.*)",        "dest": "/assets/$1" },
-    { "src": "/admin/?$",           "dest": "/admin/index.php" },
-    { "src": "/admin/(.+\\.php)",   "dest": "/admin/$1" },
-    { "src": "/pages/(.+\\.php)",   "dest": "/pages/$1" },
-    { "src": "/",                   "dest": "/index.php" },
-    { "src": "/(.+\\.php)",         "dest": "/$1" },
-    { "src": "/(.*)",               "dest": "/index.php" }
+    { "src": "/assets/(.*)",          "dest": "/assets/$1" },
+    { "src": "/admin/admin\\.css",    "dest": "/admin/admin.css", "headers": { "Content-Type": "text/css; charset=utf-8" } },
+    { "src": "/admin/admin\\.js",     "dest": "/admin/admin.js",  "headers": { "Content-Type": "application/javascript; charset=utf-8" } },
+    { "src": "/admin/uploads/(.*)",   "dest": "/admin/uploads/$1" },
+    { "src": "/admin/?$",             "dest": "/admin/index.php" },
+    { "src": "/admin/(.+\\.php)",     "dest": "/admin/$1" },
+    { "src": "/pages/(.+\\.php)",     "dest": "/pages/$1" },
+    { "src": "/",                     "dest": "/index.php" },
+    { "src": "/(.+\\.php)",           "dest": "/$1" },
+    { "src": "/(.*)",                 "dest": "/index.php" }
   ]
 }
