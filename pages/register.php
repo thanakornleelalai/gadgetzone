@@ -12,10 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass  = $_POST['password'] ?? '';
     $conf  = $_POST['confirm'] ?? '';
 
-    if ($first === '' || $last === '')               { $errors[] = 'First and last name are required.'; }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL))  { $errors[] = 'A valid email address is required.'; }
-    if (strlen($pass) < 6)                           { $errors[] = 'Password must be at least 6 characters.'; }
-    if ($pass !== $conf)                             { $errors[] = 'Passwords do not match.'; }
+    if ($first === '' || $last === '')               { $errors[] = t('reg.err.name'); }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL))  { $errors[] = t('reg.err.email'); }
+    if (strlen($pass) < 6)                           { $errors[] = t('reg.err.passlen'); }
+    if ($pass !== $conf)                             { $errors[] = t('reg.err.match'); }
 
     if (empty($errors)) {
         // Check email not taken
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
 
         if ($exists) {
-            $errors[] = 'An account with this email already exists.';
+            $errors[] = t('reg.err.taken');
         } else {
             $hash = password_hash($pass, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password, role) VALUES (?,?,?,?,'member')");
@@ -58,23 +58,23 @@ require_once __DIR__ . '/../includes/header.php';
 </style>
 <div class="container auth-wrap register-wrap">
     <div class="auth-card">
-        <h1>Create Account 🚀</h1>
-        <p class="auth-sub">Join GadgetZone and start shopping</p>
+        <h1><?= e(t('reg.title')) ?></h1>
+        <p class="auth-sub"><?= e(t('reg.sub')) ?></p>
 
         <?php if ($errors): ?>
             <div class="alert alert-error"><ul><?php foreach ($errors as $err) { echo '<li>' . e($err) . '</li>'; } ?></ul></div>
         <?php endif; ?>
 
         <form method="POST" action="<?= url('pages/register.php') ?>">
-            <div class="field"><label>First Name</label><input type="text" name="first_name" required value="<?= e($_POST['first_name'] ?? '') ?>"></div>
-            <div class="field"><label>Last Name</label><input type="text" name="last_name" required value="<?= e($_POST['last_name'] ?? '') ?>"></div>
-            <div class="field"><label>Email Address</label><input type="email" name="email" required value="<?= e($_POST['email'] ?? '') ?>"></div>
-            <div class="field"><label>Password</label><input type="password" name="password" required minlength="6"></div>
-            <div class="field"><label>Confirm Password</label><input type="password" name="confirm" required minlength="6"></div>
-            <button type="submit" class="btn btn-primary btn-lg btn-block">Create Account</button>
+            <div class="field"><label><?= e(t('reg.firstname')) ?></label><input type="text" name="first_name" required value="<?= e($_POST['first_name'] ?? '') ?>"></div>
+            <div class="field"><label><?= e(t('reg.lastname')) ?></label><input type="text" name="last_name" required value="<?= e($_POST['last_name'] ?? '') ?>"></div>
+            <div class="field"><label><?= e(t('auth.email')) ?></label><input type="email" name="email" required value="<?= e($_POST['email'] ?? '') ?>"></div>
+            <div class="field"><label><?= e(t('auth.password')) ?></label><input type="password" name="password" required minlength="6"></div>
+            <div class="field"><label><?= e(t('reg.confirm')) ?></label><input type="password" name="confirm" required minlength="6"></div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block"><?= e(t('reg.btn')) ?></button>
         </form>
 
-        <p class="auth-foot">Already have an account? <a href="<?= url('pages/login.php') ?>">Log in →</a></p>
+        <p class="auth-foot"><?= e(t('reg.login.text')) ?> <a href="<?= url('pages/login.php') ?>"><?= e(t('reg.login.link')) ?></a></p>
     </div>
 </div>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

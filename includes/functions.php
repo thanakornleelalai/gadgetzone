@@ -262,7 +262,7 @@ function renderProductCard($p)
                 <span class="price-now"><?= formatPrice($p['price']) ?></span>
                 <?php if ($hasOld): ?><span class="price-old"><?= formatPrice($p['old_price']) ?></span><?php endif; ?>
             </div>
-            <button class="btn btn-add add-to-cart" data-id="<?= (int)$p['id'] ?>">Add to Cart</button>
+            <button class="btn btn-add add-to-cart" data-id="<?= (int)$p['id'] ?>"><?= e(t('product.add')) ?></button>
         </div>
     </article>
     <?php

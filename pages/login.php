@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $redirect = $_POST['redirect'] ?? '';
 
     if ($email === '' || $pass === '') {
-        $error = 'Please enter both email and password.';
+        $error = t('auth.err.both');
     } else {
         $stmt = $conn->prepare("SELECT id, password, first_name FROM users WHERE email=? LIMIT 1");
         $stmt->bind_param('s', $email);
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ' . $dest);
             exit;
         }
-        $error = 'Invalid email or password.';
+        $error = t('auth.err.invalid');
     }
 }
 
@@ -38,26 +38,26 @@ require_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="container auth-wrap">
     <div class="auth-card">
-        <h1>Welcome Back 👋</h1>
-        <p class="auth-sub">Log in to your GadgetZone account</p>
+        <h1><?= e(t('auth.welcome')) ?></h1>
+        <p class="auth-sub"><?= e(t('auth.welcome.sub')) ?></p>
 
         <?php if ($error): ?><div class="alert alert-error"><?= e($error) ?></div><?php endif; ?>
 
         <form method="POST" action="<?= url('pages/login.php') ?>">
             <input type="hidden" name="redirect" value="<?= e($redirect) ?>">
-            <div class="field"><label>Email Address</label><input type="email" id="loginEmail" name="email" required value="<?= e($_POST['email'] ?? '') ?>"></div>
-            <div class="field"><label>Password</label><input type="password" id="loginPassword" name="password" required></div>
-            <button type="submit" class="btn btn-primary btn-lg btn-block">🔒 Log In</button>
+            <div class="field"><label><?= e(t('auth.email')) ?></label><input type="email" id="loginEmail" name="email" required value="<?= e($_POST['email'] ?? '') ?>"></div>
+            <div class="field"><label><?= e(t('auth.password')) ?></label><input type="password" id="loginPassword" name="password" required></div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">🔒 <?= e(t('auth.login')) ?></button>
         </form>
 
-        <p class="auth-foot">Don't have an account? <a href="<?= url('pages/register.php') ?>">Create one →</a></p>
+        <p class="auth-foot"><?= e(t('auth.signup.text')) ?> <a href="<?= url('pages/register.php') ?>"><?= e(t('auth.signup.link')) ?></a></p>
 
         <div class="demo-picker">
-            <label for="demoSelect">🎭 Demo Account</label>
+            <label for="demoSelect"><?= e(t('auth.demo.label')) ?></label>
             <select id="demoSelect">
-                <option value="">— เลือกบัญชีเพื่อกรอกอัตโนมัติ —</option>
-                <option value="demo@gadgetzone.com|Demo@1234">🛍️ Member  ·  demo@gadgetzone.com</option>
-                <option value="admin@gadgetzone.com|Admin@1234">🛠️ Super Admin  ·  admin@gadgetzone.com</option>
+                <option value=""><?= e(t('auth.demo.placeholder')) ?></option>
+                <option value="demo@gadgetzone.com|Demo@1234"><?= e(t('auth.demo.member')) ?></option>
+                <option value="admin@gadgetzone.com|Admin@1234"><?= e(t('auth.demo.admin')) ?></option>
             </select>
         </div>
     </div>

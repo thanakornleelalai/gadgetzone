@@ -81,6 +81,7 @@ function url($path = '')
     return BASE_URL . '/' . ltrim($path, '/');
 }
 
-// ── Bootstrap currency + functions ────────────────────────
+// ── Bootstrap currency + functions + i18n ─────────────────
 require_once __DIR__ . '/currency.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/lang.php';
