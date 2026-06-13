@@ -132,7 +132,7 @@ gadgetzone/
 
 | สิ่งที่ต้องมี | ใช้ทำอะไร |
 |------------|------------|
-| **XAMPP** (หรือ CAMPP, WAMP, MAMP) | ทำเซิร์ฟเวอร์ Apache + PHP + MySQL บนเครื่อง |
+| **XAMPP** หรือ **CAMPP** / WAMP / MAMP | ทำเซิร์ฟเวอร์ Apache + PHP + MySQL บนเครื่อง<br>(XAMPP ใช้พอร์ต **80**, CAMPP ใช้พอร์ต **8080**) |
 | **PHP 8.0+** | ตัวแปลภาษา PHP (มากับ XAMPP) |
 | **MySQL / MariaDB** | ฐานข้อมูล (มากับ XAMPP) — หรือใช้ TiDB Cloud แทนก็ได้ |
 | **Git** | สำหรับ clone repo (ไม่บังคับถ้าดาวน์โหลด ZIP) |
@@ -172,7 +172,9 @@ Linux   : /opt/lampp/htdocs/gadgetzone/
 
 ### ขั้นที่ 4 — Import ฐานข้อมูล
 
-1. เปิดเบราว์เซอร์ไปที่ http://localhost/phpmyadmin/
+1. เปิดเบราว์เซอร์ไปที่ phpMyAdmin
+   - XAMPP: http://localhost/phpmyadmin/
+   - CAMPP: http://127.0.0.1:8080/phpmyadmin/
 2. คลิกเมนู **SQL** ด้านบน
 3. เปิดไฟล์ `database_setup.sql` ในโปรเจ็กต์ คัดลอกเนื้อหาทั้งหมด
 4. วางในช่อง SQL ของ phpMyAdmin แล้วกด **Go**
@@ -203,7 +205,15 @@ GZ_BASE_URL=/gadgetzone
 
 ### ขั้นที่ 6 — เข้าหน้าเว็บ
 
-เปิดเบราว์เซอร์ไปที่: **http://localhost/gadgetzone/**
+เปิดเบราว์เซอร์ไปที่ URL ตามชนิดเซิร์ฟเวอร์ที่ใช้:
+
+| โปรแกรม | URL |
+|---------|-----|
+| **XAMPP** (default port 80) | http://localhost/gadgetzone/ |
+| **CAMPP** (default port 8080) | http://127.0.0.1:8080/gadgetzone/ |
+| **WAMP / MAMP** (port อื่น) | `http://localhost:<port>/gadgetzone/` |
+
+> ถ้าไม่แน่ใจว่าใช้พอร์ตอะไร เปิด Control Panel ของโปรแกรมที่ใช้ ดูที่ช่อง Apache จะระบุพอร์ตไว้
 
 ถ้าเห็นหน้า Home แสดงสินค้าและภาพต่าง ๆ ขึ้นมา = ติดตั้งสำเร็จ
 
@@ -227,7 +237,7 @@ GZ_BASE_URL=/gadgetzone
 
 | สภาพแวดล้อม | ค่าที่ตั้ง |
 |---------------|-------------|
-| XAMPP local (`localhost/gadgetzone/...`) | `GZ_BASE_URL=/gadgetzone` |
+| XAMPP / CAMPP local (`.../gadgetzone/...`) | `GZ_BASE_URL=/gadgetzone` |
 | Deploy ขึ้น domain ที่ root (`example.com/`) | ไม่ต้องตั้ง หรือเว้นว่าง |
 | Deploy ใต้ path (`example.com/shop/`) | `GZ_BASE_URL=/shop` |
 
@@ -244,7 +254,11 @@ GZ_BASE_URL=/gadgetzone
 | Email | `admin@gadgetzone.com` |
 | Password | `Admin@1234` |
 
-เปิดหน้า http://localhost/gadgetzone/admin/ แล้วล็อกอินด้วยบัญชีนี้ จะเข้าสู่ Admin Dashboard
+เปิดหน้า Admin (เลือกตาม server ที่ใช้):
+- XAMPP: http://localhost/gadgetzone/admin/
+- CAMPP: http://127.0.0.1:8080/gadgetzone/admin/
+
+ล็อกอินด้วยบัญชีนี้ จะเข้าสู่ Admin Dashboard
 
 > รหัสผ่านถูก hash ด้วย bcrypt เก็บในคอลัมน์ `password` ของตาราง `users`
 
@@ -298,7 +312,7 @@ GZ_BASE_URL=/gadgetzone
 ```
 
 4. ใน TiDB Cloud Dashboard → คลิก **Chat2Query** หรือ SQL Editor → วาง content ของ `database_setup.sql` แล้วรัน
-5. เปิด http://localhost/gadgetzone/ — ถ้าเห็นสินค้า = เชื่อม TiDB สำเร็จ
+5. เปิดเว็บใน browser (XAMPP → http://localhost/gadgetzone/, CAMPP → http://127.0.0.1:8080/gadgetzone/) — ถ้าเห็นสินค้า = เชื่อม TiDB สำเร็จ
 
 > TiDB เป็น MySQL-compatible สามารถใช้คำสั่ง MySQL ได้เกือบทั้งหมด สคริปต์ `database_setup.sql` ทำงานได้ปกติ
 > `GZ_DB_SSL=1` จำเป็นเพราะ TiDB Cloud บังคับใช้ TLS
@@ -399,7 +413,7 @@ sudo mysql < database_setup.sql
 **สาเหตุ:** `GZ_BASE_URL` ตั้งไม่ตรงกับ path จริง
 
 **วิธีแก้:**
-- ถ้าเข้าเว็บผ่าน `localhost/gadgetzone/` → ตั้ง `GZ_BASE_URL=/gadgetzone`
+- ถ้าเข้าเว็บผ่าน `localhost/gadgetzone/` หรือ `127.0.0.1:8080/gadgetzone/` → ตั้ง `GZ_BASE_URL=/gadgetzone`
 - ถ้าเข้าเว็บผ่าน `localhost/` (root) → ไม่ต้องตั้ง หรือเว้นว่าง
 
 ### ปัญหา: Login ไม่ได้ทั้ง ๆ ที่รหัสผ่านถูก
