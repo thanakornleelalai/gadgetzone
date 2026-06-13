@@ -28,7 +28,9 @@
 
 // ── Configuration ─────────────────────────────────────────
 if (!defined('BASE_URL')) {
-    define('BASE_URL', getenv('GZ_BASE_URL') !== false ? getenv('GZ_BASE_URL') : '/gadgetzone');
+    // Default to '' (site at web root) so cloud deploys (Vercel, Railway, etc.)
+    // work out of the box. Local XAMPP sets GZ_BASE_URL=/gadgetzone via .env.
+    define('BASE_URL', getenv('GZ_BASE_URL') !== false ? getenv('GZ_BASE_URL') : '');
 }
 
 define('DB_HOST', getenv('GZ_DB_HOST') ?: '127.0.0.1');
