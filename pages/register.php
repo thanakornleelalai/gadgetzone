@@ -45,7 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
-<div class="container auth-wrap">
+<style>
+/* Register-specific tweaks — slightly wider card, tighter vertical rhythm
+   so the 5 stacked fields don't make the form look stretched. */
+.auth-wrap.register-wrap { max-width: 480px; margin: 40px auto; }
+.register-wrap .auth-card { padding: 34px 36px 30px; }
+.register-wrap .auth-card h1 { margin-bottom: 4px; }
+.register-wrap .auth-sub { margin-bottom: 22px; }
+.register-wrap .auth-card .field { margin-bottom: 14px; }
+.register-wrap .auth-card .btn-block { margin-top: 6px; }
+.register-wrap .auth-foot { margin-top: 16px; }
+</style>
+<div class="container auth-wrap register-wrap">
     <div class="auth-card">
         <h1>Create Account 🚀</h1>
         <p class="auth-sub">Join GadgetZone and start shopping</p>
@@ -55,10 +66,8 @@ require_once __DIR__ . '/../includes/header.php';
         <?php endif; ?>
 
         <form method="POST" action="<?= url('pages/register.php') ?>">
-            <div class="form-grid">
-                <div class="field"><label>First Name</label><input type="text" name="first_name" required value="<?= e($_POST['first_name'] ?? '') ?>"></div>
-                <div class="field"><label>Last Name</label><input type="text" name="last_name" required value="<?= e($_POST['last_name'] ?? '') ?>"></div>
-            </div>
+            <div class="field"><label>First Name</label><input type="text" name="first_name" required value="<?= e($_POST['first_name'] ?? '') ?>"></div>
+            <div class="field"><label>Last Name</label><input type="text" name="last_name" required value="<?= e($_POST['last_name'] ?? '') ?>"></div>
             <div class="field"><label>Email Address</label><input type="email" name="email" required value="<?= e($_POST['email'] ?? '') ?>"></div>
             <div class="field"><label>Password</label><input type="password" name="password" required minlength="6"></div>
             <div class="field"><label>Confirm Password</label><input type="password" name="confirm" required minlength="6"></div>
