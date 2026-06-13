@@ -76,6 +76,14 @@ INSERT IGNORE INTO settings (setting_key, setting_value) VALUES
 ('stripe_secret_key',      'sk_test_REPLACE_WITH_YOUR_KEY'),
 ('stripe_webhook_secret',  '');
 
+-- Sessions (used when GZ_DB_SSL=1 so logins persist across serverless requests)
+CREATE TABLE IF NOT EXISTS sessions (
+    id      VARCHAR(128) PRIMARY KEY,
+    data    MEDIUMTEXT   NOT NULL,
+    expires INT          NOT NULL,
+    INDEX idx_expires (expires)
+);
+
 -- Order Items
 CREATE TABLE IF NOT EXISTS order_items (
     id         INT AUTO_INCREMENT PRIMARY KEY,

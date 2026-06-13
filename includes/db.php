@@ -47,11 +47,6 @@ define('SHIPPING_FEE', 150);
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-// ── Session ───────────────────────────────────────────────
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 // ── Database connection (mysqli, OO style) ────────────────
 mysqli_report(MYSQLI_REPORT_OFF); // we handle errors ourselves
 
@@ -74,6 +69,18 @@ if ($conn->connect_errno) {
         . '<br>Please import <code>database_setup.sql</code> and check credentials in <code>.env</code>.');
 }
 $conn->set_charset('utf8mb4');
+
+// ── Session ───────────────────────────────────────────────
+// When using a cloud DB (TiDB / managed MySQL), Vercel-style serverless
+// filesystems do not persist session files between invocations, so route
+// sessions through the DB instead.
+if (session_status() === PHP_SESSION_NONE) {
+    if (DB_SSL) {
+        require_once __DIR__ . '/session_db.php';
+        session_set_save_handler(new GZ_DbSessionHandler($conn), true);
+    }
+    session_start();
+}
 
 // ── Helper: build an absolute URL from BASE_URL ───────────
 function url($path = '')
