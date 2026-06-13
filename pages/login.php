@@ -52,53 +52,34 @@ require_once __DIR__ . '/../includes/header.php';
 
         <p class="auth-foot">Don't have an account? <a href="<?= url('pages/register.php') ?>">Create one →</a></p>
 
-        <div class="demo-accounts">
-            <h4 class="demo-accounts-title">🎭 Demo Accounts — คลิกเพื่อกรอกอัตโนมัติ</h4>
-            <div class="demo-grid">
-                <button type="button" class="demo-card" data-email="demo@gadgetzone.com" data-pass="Demo@1234">
-                    <span class="demo-icon">🛍️</span>
-                    <div class="demo-info">
-                        <strong>Member (ผู้ซื้อ)</strong>
-                        <span class="demo-row"><em>Email:</em> <code>demo@gadgetzone.com</code></span>
-                        <span class="demo-row"><em>Password:</em> <code>Demo@1234</code></span>
-                    </div>
-                </button>
-                <button type="button" class="demo-card" data-email="admin@gadgetzone.com" data-pass="Admin@1234">
-                    <span class="demo-icon">🛠️</span>
-                    <div class="demo-info">
-                        <strong>Super Admin (ผู้ดูแล)</strong>
-                        <span class="demo-row"><em>Email:</em> <code>admin@gadgetzone.com</code></span>
-                        <span class="demo-row"><em>Password:</em> <code>Admin@1234</code></span>
-                    </div>
-                </button>
-            </div>
+        <div class="demo-picker">
+            <label for="demoSelect">🎭 Demo Account</label>
+            <select id="demoSelect">
+                <option value="">— เลือกบัญชีเพื่อกรอกอัตโนมัติ —</option>
+                <option value="demo@gadgetzone.com|Demo@1234">🛍️ Member  ·  demo@gadgetzone.com</option>
+                <option value="admin@gadgetzone.com|Admin@1234">🛠️ Super Admin  ·  admin@gadgetzone.com</option>
+            </select>
         </div>
     </div>
 </div>
 
 <style>
-.demo-accounts { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--border); }
-.demo-accounts-title { font-size: .82rem; color: var(--text2); margin: 0 0 12px; font-family: var(--font-head); font-weight: 700; letter-spacing: .02em; }
-.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.demo-card { display: flex; align-items: flex-start; gap: 10px; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; text-align: left; cursor: pointer; transition: border-color .15s, background .15s, transform .1s; color: inherit; font-family: inherit; }
-.demo-card:hover { border-color: var(--accent); background: rgba(245,158,11,.06); }
-.demo-card:active { transform: translateY(1px); }
-.demo-icon { font-size: 1.5rem; line-height: 1; padding-top: 2px; }
-.demo-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-.demo-info strong { font-family: var(--font-head); font-size: .92rem; color: var(--text); margin-bottom: 3px; }
-.demo-row { font-size: .75rem; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.demo-row em { font-style: normal; color: var(--text2); margin-right: 3px; }
-.demo-row code { background: rgba(255,255,255,.04); padding: 1px 6px; border-radius: 4px; font-size: .72rem; color: var(--accent-light); border: 1px solid var(--border); }
-@media (max-width: 540px) { .demo-grid { grid-template-columns: 1fr; } }
+.demo-picker { margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--border-strong); display: flex; flex-direction: column; gap: 7px; }
+.demo-picker label { font-size: .82rem; color: var(--text2); font-weight: 600; }
+.demo-picker select { padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: inherit; font-size: .88rem; cursor: pointer; transition: border-color .15s; }
+.demo-picker select:hover, .demo-picker select:focus { border-color: var(--accent); outline: none; }
 </style>
 
 <script>
-document.querySelectorAll('.demo-card').forEach(function (card) {
-    card.addEventListener('click', function () {
-        document.getElementById('loginEmail').value    = card.dataset.email;
-        document.getElementById('loginPassword').value = card.dataset.pass;
-        document.getElementById('loginEmail').focus();
+(function () {
+    var sel = document.getElementById('demoSelect');
+    if (!sel) return;
+    sel.addEventListener('change', function () {
+        if (!sel.value) return;
+        var parts = sel.value.split('|');
+        document.getElementById('loginEmail').value    = parts[0];
+        document.getElementById('loginPassword').value = parts[1];
     });
-});
+})();
 </script>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
