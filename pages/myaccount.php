@@ -27,12 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
         finfo_close($finfo);
         if (isset($allowed[$mime]) && $_FILES['avatar']['size'] <= 2 * 1024 * 1024) {
             $dir = __DIR__ . '/../assets/uploads/avatars/';
-            if (!is_dir($dir)) { @mkdir($dir, 0775, true); }
-            $fname = 'u' . $user['id'] . '_' . time() . '.' . $allowed[$mime];
-            if (move_uploaded_file($_FILES['avatar']['tmp_name'], $dir . $fname)) {
-                // remove old file
-                if ($avatarName && is_file($dir . $avatarName)) { @unlink($dir . $avatarName); }
-                $avatarName = $fname;
+            $fsWritable = (is_dir($dir) && is_writable($dir)) || @mkdir($dir, 0775, true);
+            if (!$fsWritable) {
+                $notice = ['type' => 'error', 'msg' => 'Profile picture upload is not available on this host.'];
+            } else {
+                $fname = 'u' . $user['id'] . '_' . time() . '.' . $allowed[$mime];
+                if (@move_uploaded_file($_FILES['avatar']['tmp_name'], $dir . $fname)) {
+                    // remove old file
+                    if ($avatarName && is_file($dir . $avatarName)) { @unlink($dir . $avatarName); }
+                    $avatarName = $fname;
+                }
             }
         } else {
             $notice = ['type' => 'error', 'msg' => 'Avatar must be JPG/PNG/WebP/GIF under 2MB.'];

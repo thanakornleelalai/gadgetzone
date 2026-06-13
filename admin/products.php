@@ -23,17 +23,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower($name));
         $slug = trim($slug, '-') ?: ('product-' . time());
 
-        // Image upload (overrides image_url if a file is provided)
+        // Image upload (overrides image_url if a file is provided).
+        // On serverless hosts (Vercel) the filesystem is read-only — detect and
+        // fall back to whatever Image URL field was filled in.
         if (!empty($_FILES['image_file']['name']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
             $allowed = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime  = finfo_file($finfo, $_FILES['image_file']['tmp_name']);
             finfo_close($finfo);
+
+            $dir = __DIR__ . '/uploads/';
+            $fsWritable = (is_dir($dir) && is_writable($dir)) || @mkdir($dir, 0775, true);
+
+            if (!$fsWritable) {
+                // Read-only filesystem (Vercel / serverless). Surface a clear message
+                // instead of letting move_uploaded_file emit warnings that break header().
+                $flash = 'File upload not available on this host — please paste an Image URL instead.';
+                header('Location: ' . url('admin/products.php?flash=' . urlencode($flash)));
+                exit;
+            }
+
             if (isset($allowed[$mime]) && $_FILES['image_file']['size'] <= 4*1024*1024) {
-                $dir = __DIR__ . '/uploads/';
-                if (!is_dir($dir)) { @mkdir($dir, 0775, true); }
                 $fname = $slug . '_' . time() . '.' . $allowed[$mime];
-                if (move_uploaded_file($_FILES['image_file']['tmp_name'], $dir . $fname)) {
+                if (@move_uploaded_file($_FILES['image_file']['tmp_name'], $dir . $fname)) {
                     $image_url = url('admin/uploads/' . $fname);
                 }
             }
