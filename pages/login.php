@@ -1,0 +1,57 @@
+<?php
+require_once __DIR__ . '/../includes/db.php';
+$page_title = 'Login';
+
+if (isLoggedIn()) { header('Location: ' . url('pages/myaccount.php')); exit; }
+
+$redirect = isset($_GET['redirect']) ? $_GET['redirect'] : '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = sanitize($_POST['email'] ?? '');
+    $pass  = $_POST['password'] ?? '';
+    $redirect = $_POST['redirect'] ?? '';
+
+    if ($email === '' || $pass === '') {
+        $error = 'Please enter both email and password.';
+    } else {
+        $stmt = $conn->prepare("SELECT id, password, first_name FROM users WHERE email=? LIMIT 1");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $user = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        if ($user && password_verify($pass, $user['password'])) {
+            session_regenerate_id(true);
+            $_SESSION['user_id'] = (int)$user['id'];
+            $dest = $redirect !== '' ? $redirect : url('pages/myaccount.php');
+            // Only allow same-app relative redirects
+            if (strpos($dest, '://') !== false) { $dest = url('pages/myaccount.php'); }
+            header('Location: ' . $dest);
+            exit;
+        }
+        $error = 'Invalid email or password.';
+    }
+}
+
+require_once __DIR__ . '/../includes/header.php';
+?>
+<div class="container auth-wrap">
+    <div class="auth-card">
+        <h1>Welcome Back 👋</h1>
+        <p class="auth-sub">Log in to your GadgetZone account</p>
+
+        <?php if ($error): ?><div class="alert alert-error"><?= e($error) ?></div><?php endif; ?>
+
+        <form method="POST" action="<?= url('pages/login.php') ?>">
+            <input type="hidden" name="redirect" value="<?= e($redirect) ?>">
+            <div class="field"><label>Email Address</label><input type="email" name="email" required value="<?= e($_POST['email'] ?? '') ?>"></div>
+            <div class="field"><label>Password</label><input type="password" name="password" required></div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">🔒 Log In</button>
+        </form>
+
+        <p class="auth-foot">Don’t have an account? <a href="<?= url('pages/register.php') ?>">Create one →</a></p>
+        <p class="auth-hint">Demo admin: <code>admin@gadgetzone.com</code> / <code>Admin@1234</code></p>
+    </div>
+</div>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

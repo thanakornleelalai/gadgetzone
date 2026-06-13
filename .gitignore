@@ -1,0 +1,27 @@
+# Uploaded files (runtime data — not source)
+admin/uploads/*
+!admin/uploads/.gitkeep
+assets/uploads/avatars/*
+!assets/uploads/avatars/.gitkeep
+
+# Logs
+*.log
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PHP
+vendor/
+composer.lock
+
+# Local env overrides (if you add any later)
+.env
+.env.local
