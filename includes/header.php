@@ -64,9 +64,25 @@ $__otherLang = $__lang === 'th' ? 'en' : 'th';
         </form>
 
         <div class="header-actions">
-            <a class="lang-switch" href="<?= e(gz_langSwitchUrl($__otherLang)) ?>" title="<?= $__lang==='th'?'Switch to English':'เปลี่ยนเป็นภาษาไทย' ?>">
-                <?= e(t('lang.switch.to')) ?>
-            </a>
+            <div class="lang-dropdown" id="langDropdown">
+                <button type="button" class="lang-trigger" id="langTrigger" aria-haspopup="true" aria-expanded="false">
+                    <span class="lang-flag"><?= $__lang === 'th' ? '🇹🇭' : '🇬🇧' ?></span>
+                    <span class="lang-code"><?= $__lang === 'th' ? 'TH' : 'EN' ?></span>
+                    <span class="lang-caret">▾</span>
+                </button>
+                <div class="lang-menu" role="menu">
+                    <a href="<?= e(gz_langSwitchUrl('th')) ?>" class="lang-opt <?= $__lang==='th'?'active':'' ?>" role="menuitem">
+                        <span class="lang-flag">🇹🇭</span>
+                        <span class="lang-label">ไทย</span>
+                        <?php if ($__lang === 'th'): ?><span class="lang-check">✓</span><?php endif; ?>
+                    </a>
+                    <a href="<?= e(gz_langSwitchUrl('en')) ?>" class="lang-opt <?= $__lang==='en'?'active':'' ?>" role="menuitem">
+                        <span class="lang-flag">🇬🇧</span>
+                        <span class="lang-label">English</span>
+                        <?php if ($__lang === 'en'): ?><span class="lang-check">✓</span><?php endif; ?>
+                    </a>
+                </div>
+            </div>
 
             <?php if ($__user): ?>
                 <a class="icon-btn" href="<?= url('pages/myaccount.php') ?>" title="<?= e(t('nav.account')) ?>">

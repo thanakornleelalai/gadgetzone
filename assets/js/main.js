@@ -205,6 +205,30 @@
     }
   }
 
+  // ---- Language flag dropdown ----------------------------------------------
+  function wireLangDropdown() {
+    var dd  = qs('#langDropdown');
+    var trg = qs('#langTrigger');
+    if (!dd || !trg) return;
+    trg.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = dd.classList.toggle('open');
+      trg.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!dd.contains(e.target)) {
+        dd.classList.remove('open');
+        trg.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        dd.classList.remove('open');
+        trg.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   // ---- Reveal on scroll -----------------------------------------------------
   function wireReveal() {
     var items = qsa('.reveal');
@@ -280,6 +304,7 @@
     wireRemoveForms();
     wireCountdown();
     wireNav();
+    wireLangDropdown();
     wireReveal();
     wireAvatarPreview();
   });
