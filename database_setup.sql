@@ -89,10 +89,15 @@ CREATE TABLE IF NOT EXISTS order_items (
 
 -- ── Seed data ──────────────────────────────────────────────
 
-INSERT IGNORE INTO users (first_name, last_name, email, password, role) VALUES
-('Super',  'Admin', 'admin@gadgetzone.com',
- '$2y$10$IHDQwagf1JxAncjpyZj5oefo9utzJ7AQG0bez9kMXj2aEexbnIFBa', 'super_admin');
--- Password above is: Admin@1234
+INSERT IGNORE INTO users (first_name, last_name, email, password, phone, address, city, role) VALUES
+('Super', 'Admin', 'admin@gadgetzone.com',
+ '$2y$10$IHDQwagf1JxAncjpyZj5oefo9utzJ7AQG0bez9kMXj2aEexbnIFBa',
+ NULL, NULL, NULL, 'super_admin'),
+('Demo',  'User',  'demo@gadgetzone.com',
+ '$2y$12$ImgKcQQ2W/RUlawMQn/0POCl.vSavJ5u51R8Hbtd8NxH3/WRRLPIG',
+ '081-234-5678', '123 Demo Street, Bangkok', 'Bangkok', 'member');
+-- Admin password: Admin@1234
+-- Demo  password: Demo@1234
 
 INSERT IGNORE INTO categories (name, slug, icon) VALUES
 ('Smartphones', 'smartphones', '📱'),
