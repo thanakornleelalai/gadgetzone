@@ -86,8 +86,15 @@
           '<div class="field"><label>Featured</label><label class="switch-row"><input type="checkbox" name="featured" value="1"' + (Number(p.featured) ? ' checked' : '') + '> Show on homepage</label></div>' +
         '</div>' +
         '<div class="field"><label>Description</label><textarea name="description" rows="3">' + esc(p.description || '') + '</textarea></div>' +
-        '<div class="field"><label>Image URL</label><input type="text" name="image_url" value="' + esc(p.image_url || '') + '" placeholder="https://…"></div>' +
-        '<div class="field"><label>…or upload an image</label><input type="file" name="image_file" accept="image/*" id="pImgFile"></div>' +
+        '<div class="field">' +
+          '<label>Image URL</label>' +
+          '<div class="img-url-row">' +
+            '<input type="text" id="pImgUrl" name="image_url" value="' + esc(p.image_url || '') + '" placeholder="https://images.unsplash.com/…">' +
+            '<button type="button" class="btn btn-ghost sm" id="pUnsplashBtn" title="Open Unsplash search in a new tab">🔍 Find on Unsplash</button>' +
+          '</div>' +
+          '<small class="muted img-url-hint">หา Unsplash → คลิกขวาที่รูป → <strong>Copy image address</strong> → paste กลับช่องนี้</small>' +
+        '</div>' +
+        '<div class="field"><label>…or upload from your computer (local only)</label><input type="file" name="image_file" accept="image/*" id="pImgFile"></div>' +
         '<div class="modal-img-wrap">' + img + '</div>' +
         '<div class="modal-foot">' +
           '<button type="button" class="btn btn-ghost" data-modal-close>Cancel</button>' +
@@ -96,25 +103,62 @@
       '</form>';
   }
 
+  function setPreviewSrc(src) {
+    var prev = qs('#pImgPreview');
+    if (!prev) { return; }
+    if (prev.tagName === 'IMG') { prev.src = src; }
+    else {
+      var img = document.createElement('img');
+      img.id = 'pImgPreview'; img.className = 'modal-img-preview'; img.src = src;
+      prev.parentNode.replaceChild(img, prev);
+    }
+  }
+
   function wireImagePreview() {
+    // File upload preview (local)
     var file = qs('#pImgFile');
-    if (!file) { return; }
-    file.addEventListener('change', function () {
-      var f = file.files && file.files[0];
-      if (!f) { return; }
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        var prev = qs('#pImgPreview');
-        if (!prev) { return; }
-        if (prev.tagName === 'IMG') { prev.src = e.target.result; }
-        else {
-          var img = document.createElement('img');
-          img.id = 'pImgPreview'; img.className = 'modal-img-preview'; img.src = e.target.result;
-          prev.parentNode.replaceChild(img, prev);
+    if (file) {
+      file.addEventListener('change', function () {
+        var f = file.files && file.files[0];
+        if (!f) { return; }
+        var reader = new FileReader();
+        reader.onload = function (e) { setPreviewSrc(e.target.result); };
+        reader.readAsDataURL(f);
+      });
+    }
+
+    // Image URL live preview — updates on paste / input
+    var urlInput = qs('#pImgUrl');
+    if (urlInput) {
+      var updateFromUrl = function () {
+        var v = urlInput.value.trim();
+        if (!v) { return; }
+        // Warn if user pasted a Unsplash *photo page* URL instead of the direct image URL
+        if (/^https?:\/\/unsplash\.com\/photos\//i.test(v)) {
+          urlInput.style.borderColor = 'var(--red)';
+          if (window.AdminUI && AdminUI.toast) {
+            AdminUI.toast('ลิงก์นี้เป็นหน้ารายละเอียดของ Unsplash — โปรด right-click ที่รูป → "Copy image address"', 'error');
+          }
+          return;
         }
+        urlInput.style.borderColor = '';
+        if (/^https?:\/\//i.test(v)) { setPreviewSrc(v); }
       };
-      reader.readAsDataURL(f);
-    });
+      urlInput.addEventListener('paste', function () { setTimeout(updateFromUrl, 30); });
+      urlInput.addEventListener('input',  updateFromUrl);
+      urlInput.addEventListener('blur',   updateFromUrl);
+    }
+
+    // "Find on Unsplash" — open search in new tab using current product name
+    var unsplashBtn = qs('#pUnsplashBtn');
+    if (unsplashBtn) {
+      unsplashBtn.addEventListener('click', function () {
+        var nameInput = document.querySelector('input[name="name"]');
+        var q = (nameInput && nameInput.value.trim()) || 'gadget';
+        var url = 'https://unsplash.com/s/photos/' + encodeURIComponent(q);
+        window.open(url, '_blank', 'noopener');
+      });
+    }
   }
 
   var ProductAdmin = {
